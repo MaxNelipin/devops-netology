@@ -1,0 +1,14 @@
+FROM archlinux:latest
+
+RUN pacman -Syy && \
+
+    git clone https://aur.archlinux.org/snapd.git && \
+    cd snapd && \
+    makepkg -si && \
+    systemctl enable --now snapd.socket && \
+    ln -s /var/lib/snapd/snap /snap
+
+RUN snap install ponysay
+
+ENTRYPOINT ["ponysay"]
+CMD ["Hey, netology”]
