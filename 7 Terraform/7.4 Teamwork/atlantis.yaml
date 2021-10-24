@@ -1,0 +1,41 @@
+version: 3
+projects:
+- name:
+- dir: project1
+  workspace: stage
+  terraform_version: 1.0.8
+  autoplan:
+    when_modified: ["../modules/**/*.tf", "*.tf*"]
+    enabled: true
+  workflow: stage
+- dir: project1
+  workspace: prod
+  terraform_version: 1.0.8
+  apply_requirements: [approved]
+  autoplan:
+    when_modified: ["../modules/**/*.tf", "*.tf*"]
+    enabled: true
+  workflow: prod
+workflows:
+  stage:
+    plan:
+      steps:
+      - init
+      - plan:
+          extra_args: ["-lock", "false"]
+    apply:
+      steps:
+      - run: echo stage
+      - apply
+  prod:
+    plan:
+      steps:
+      - init
+      - plan:
+          extra_args: ["-lock", "true"]
+    apply:
+      steps:
+      - run: echo prod
+      - apply
+
+
